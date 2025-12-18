@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pitch/firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'stories_screen.dart';
 import 'register_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,7 +11,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  String selectedRole = "User";
   String errorMessage = "";
 
   final emailController = TextEditingController();
@@ -22,12 +20,11 @@ class _LoginScreenState extends State<LoginScreen>
   late Animation<double> fadeAnim;
   late Animation<Offset> slideAnim;
 
-  final Color tColor = Color(0xFF1ABC9C); // Turquoise blue
+  final Color tColor = Color(0xFF1ABC9C);
 
   @override
   void initState() {
     super.initState();
-    _initializeFirebase();
 
     _controller = AnimationController(
       vsync: this,
@@ -48,12 +45,6 @@ class _LoginScreenState extends State<LoginScreen>
     _controller.forward();
   }
 
-  Future<void> _initializeFirebase() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -70,155 +61,118 @@ class _LoginScreenState extends State<LoginScreen>
             return SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: IntrinsicHeight(
-                  child: Center(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Center(
+                  child: FadeTransition(
+                    opacity: fadeAnim,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        FadeTransition(
-                          opacity: fadeAnim,
-                          child: Column(
-                            children: [
-                              Text(
-                                "Welcome to Pitch",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
+                        Column(
+                          children: [
+                            Text(
+                              "Welcome to Pitch",
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                "Discover real founder journeys that inspire your path.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Discover real founder journeys that inspire your path.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 50),
-                        FadeTransition(
-                          opacity: fadeAnim,
-                          child: SlideTransition(
-                            position: slideAnim,
-                            child: Container(
-                              padding: EdgeInsets.all(25),
-                              width: 340,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 25,
-                                    spreadRadius: -5,
-                                    offset: Offset(0, 10),
-                                    color: Colors.black.withOpacity(0.08),
-                                  )
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(height: 20),
-
-                                  _buildInputField(
-                                    controller: emailController,
-                                    label: "Email",
-                                    icon: Icons.email_outlined,
+                        SlideTransition(
+                          position: slideAnim,
+                          child: Container(
+                            padding: EdgeInsets.all(25),
+                            width: 340,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 25,
+                                  spreadRadius: -5,
+                                  offset: Offset(0, 10),
+                                  color: Colors.black.withOpacity(0.08),
+                                )
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                _buildInputField(
+                                  controller: emailController,
+                                  label: "Email",
+                                  icon: Icons.email_outlined,
+                                ),
+                                SizedBox(height: 18),
+                                _buildInputField(
+                                  controller: passwordController,
+                                  label: "Password",
+                                  icon: Icons.lock_outline,
+                                  isPassword: true,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {},
+                                    child: Text("Forgot Password?",
+                                        style: TextStyle(color: tColor)),
                                   ),
-                                  SizedBox(height: 18),
-
-                                  _buildInputField(
-                                    controller: passwordController,
-                                    label: "Password",
-                                    icon: Icons.lock_outline,
-                                    isPassword: true,
+                                ),
+                                if (errorMessage.isNotEmpty)
+                                  Text(
+                                    errorMessage,
+                                    style: TextStyle(
+                                      color: tColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-
-                                  SizedBox(height: 10),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: TextButton(
-                                      onPressed: () {},
+                                SizedBox(height: 20),
+                                GestureDetector(
+                                  onTap: _handleLogin,
+                                  child: Container(
+                                    height: 55,
+                                    decoration: BoxDecoration(
+                                      color: tColor,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Center(
                                       child: Text(
-                                        "Forgot Password?",
+                                        "Login",
                                         style: TextStyle(
-                                          color: tColor,
-                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
-
-                                  if (errorMessage.isNotEmpty)
-                                    Text(
-                                      errorMessage,
-                                      style: TextStyle(
-                                        color: tColor,
-                                        fontWeight: FontWeight.bold,
+                                ),
+                                SizedBox(height: 30),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RegisterScreen(),
                                       ),
-                                    ),
-
-                                  SizedBox(height: 20),
-
-                                  GestureDetector(
-                                    onTap: _handleLogin,
-                                    child: AnimatedContainer(
-                                      duration: Duration(milliseconds: 300),
-                                      height: 55,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: tColor,
-                                        borderRadius: BorderRadius.circular(30),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: tColor.withOpacity(0.4),
-                                            blurRadius: 15,
-                                            spreadRadius: 1,
-                                            offset: Offset(0, 5),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Login",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Don't have an account? Sign Up",
+                                    style: TextStyle(
+                                      color: tColor,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-
-                                  SizedBox(height: 30),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => RegisterScreen()));
-                                    },
-                                    child: Text(
-                                      "Don't have an account? Sign Up",
-                                      style: TextStyle(
-                                        color: tColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -234,33 +188,6 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildToggle(String role) {
-    bool isSelected = selectedRole == role;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => selectedRole = role),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 250),
-          padding: EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? tColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Center(
-            child: Text(
-              role,
-              style: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey[700],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildInputField({
     required TextEditingController controller,
     required String label,
@@ -270,52 +197,46 @@ class _LoginScreenState extends State<LoginScreen>
     return TextField(
       controller: controller,
       obscureText: isPassword,
-      cursorColor: tColor,
       decoration: InputDecoration(
         labelText: label,
         icon: Icon(icon, color: tColor),
-        labelStyle: TextStyle(color: Colors.black54),
         border: InputBorder.none,
       ),
-      style: TextStyle(color: Colors.black),
     );
   }
 
   void _handleLogin() async {
     setState(() => errorMessage = "");
 
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      setState(() => errorMessage = "Please enter email and password");
-      return;
-    }
-
-    if (!email.contains("@")) {
-      setState(() => errorMessage = "Invalid email format");
-      return;
-    }
-
-    if (password.length < 6) {
-      setState(() => errorMessage = "Password must be at least 6 characters");
-      return;
-    }
-
     try {
-      // Firebase login
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      // Sign in with Firebase Auth
+      UserCredential credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-      // Check role if needed from Firestore later
+      // Fetch user data from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .get();
+
+      String role = "investor"; // default fallback
+      if (userDoc.exists && userDoc['role'] != null) {
+        role = userDoc['role'].toString().toLowerCase(); // normalize to lowercase
+      }
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => StoriesScreen()),
+        MaterialPageRoute(
+          builder: (_) => StoriesScreen(userRole: role),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       setState(() => errorMessage = e.message ?? "Login failed");
     } catch (e) {
-      setState(() => errorMessage = "An unexpected error occurred");
+      setState(() => errorMessage = "Something went wrong");
     }
   }
 }

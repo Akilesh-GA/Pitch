@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2
   cloud_firestore: ^6.1.0
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -57,10 +58,19 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/icons/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/logo_foreground2.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/logo_foreground2.png"
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

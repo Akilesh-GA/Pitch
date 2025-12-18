@@ -295,10 +295,11 @@ class _RegisterScreenState extends State<RegisterScreen>
   void _handleRegister() async {
     setState(() => errorMessage = "");
 
-    String name = nameController.text.trim();
-    String phone = phoneController.text.trim();
-    String email = emailController.text.trim();
+    String name = nameController.text.trim().toLowerCase();
+    String phone = phoneController.text.trim().toLowerCase();
+    String email = emailController.text.trim().toLowerCase();
     String password = passwordController.text.trim();
+    String role = selectedRole.toLowerCase();
 
     if (name.isEmpty || phone.isEmpty || email.isEmpty || password.isEmpty) {
       setState(() => errorMessage = "All fields are required");
@@ -316,11 +317,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
 
     try {
-      // Firebase registration
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Save extra info in Firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
@@ -328,14 +327,13 @@ class _RegisterScreenState extends State<RegisterScreen>
         'name': name,
         'phone': phone,
         'email': email,
-        'role': selectedRole,
+        'role': role,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Navigate to StoriesScreen after successful signup
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => StoriesScreen()),
+        MaterialPageRoute(builder: (_) => LoginScreen()),
       );
     } on FirebaseAuthException catch (e) {
       setState(() => errorMessage = e.message ?? "Registration failed");

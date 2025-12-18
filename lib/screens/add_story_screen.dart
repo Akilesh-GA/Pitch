@@ -4,6 +4,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddStoryScreen extends StatefulWidget {
+  final String userRole;
+
+  const AddStoryScreen({Key? key, required this.userRole}) : super(key: key);
+
   @override
   _AddStoryScreenState createState() => _AddStoryScreenState();
 }
@@ -14,10 +18,8 @@ class _AddStoryScreenState extends State<AddStoryScreen>
   final descriptionController = TextEditingController();
 
   File? logoFile;
-
   String errorMessage = "";
 
-  // made nullable to avoid LateInitializationError
   AnimationController? _controller;
   Animation<double>? fadeAnim;
   Animation<Offset>? slideAnim;
@@ -42,13 +44,11 @@ class _AddStoryScreenState extends State<AddStoryScreen>
       CurvedAnimation(parent: _controller!, curve: Curves.easeOut),
     );
 
-    // null-aware call (safety)
     _controller?.forward();
   }
 
   @override
   void dispose() {
-    // null-safe dispose
     _controller?.dispose();
     titleController.dispose();
     descriptionController.dispose();
@@ -89,17 +89,18 @@ class _AddStoryScreenState extends State<AddStoryScreen>
       return;
     }
 
-    Navigator.push(
+    // 🔹 Later this is where Firestore upload will happen
+
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => StoriesScreen()),
+      MaterialPageRoute(
+        builder: (_) => StoriesScreen(userRole: widget.userRole),
+      ),
     );
   }
 
-  // ---------------------------------------------------
-
   @override
   Widget build(BuildContext context) {
-    // Fallback animations in case initState didn't run or fields are null
     final Animation<double> opacityAnim =
         fadeAnim ?? AlwaysStoppedAnimation<double>(1.0);
     final Animation<Offset> offsetAnim =
@@ -174,7 +175,8 @@ class _AddStoryScreenState extends State<AddStoryScreen>
                                         BorderRadius.circular(20),
                                         border:
                                         Border.all(color: Colors.grey),
-                                        color: Colors.black.withOpacity(0.05),
+                                        color:
+                                        Colors.black.withOpacity(0.05),
                                         image: logoFile != null
                                             ? DecorationImage(
                                           image:
@@ -203,7 +205,8 @@ class _AddStoryScreenState extends State<AddStoryScreen>
                                   _buildInput(
                                     controller: descriptionController,
                                     label: "Share Your Story",
-                                    icon: Icons.description_rounded,
+                                    icon:
+                                    Icons.description_rounded,
                                     maxLines: 4,
                                   ),
 
@@ -240,7 +243,8 @@ class _AddStoryScreenState extends State<AddStoryScreen>
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight:
+                                            FontWeight.bold,
                                           ),
                                         ),
                                       ),
@@ -251,10 +255,13 @@ class _AddStoryScreenState extends State<AddStoryScreen>
 
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => StoriesScreen(),
+                                          builder: (_) =>
+                                              StoriesScreen(
+                                                  userRole:
+                                                  widget.userRole),
                                         ),
                                       );
                                     },
@@ -285,7 +292,6 @@ class _AddStoryScreenState extends State<AddStoryScreen>
     );
   }
 
-  // -------------------- INPUT FIELD --------------------
   Widget _buildInput({
     required TextEditingController controller,
     required String label,
@@ -310,13 +316,12 @@ class _AddStoryScreenState extends State<AddStoryScreen>
             controller: controller,
             maxLines: maxLines,
             decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: Color(0xFF1ABC9C)),
+              prefixIcon:
+              Icon(icon, color: Color(0xFF1ABC9C)),
               border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
               hintText: label,
-              contentPadding:
-              EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: 14, horizontal: 10),
             ),
           ),
         ),
