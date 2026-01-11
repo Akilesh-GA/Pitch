@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import '../models/story_model.dart';
 import '../widgets/story_card.dart';
-import 'package:flutter/gestures.dart';
 import 'add_story_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
+import 'package:flutter/gestures.dart';
+
 
 class StoriesScreen extends StatefulWidget {
   final String userRole;
 
-  const StoriesScreen({
-    Key? key,
-    required this.userRole,
-  }) : super(key: key);
+  const StoriesScreen({Key? key, required this.userRole}) : super(key: key);
 
   @override
   _StoriesScreenState createState() => _StoriesScreenState();
@@ -23,7 +21,8 @@ class _StoriesScreenState extends State<StoriesScreen> {
   final List<Story> stories = [
     Story(
       companyName: "PunchBiz",
-      headline: "AI-powered platform helping startups simplify business workflows.",
+      headline:
+      "AI-powered platform helping startups simplify business workflows.",
       image: "assets/images/punchbiz.png",
       founders:
       "Founded by Sriram Krishnamoorthy and team with a mission to transform business operations.",
@@ -41,12 +40,9 @@ class _StoriesScreenState extends State<StoriesScreen> {
       image: "assets/images/freshworks.jpeg",
       founders:
       "Founded in 2010 in Chennai, India, by Girish Mathrubootham and Shan Krishnasamy.",
-      vision:
-      "To simplify business operations and improve both customer and employee experiences.",
-      mission:
-      "To provide uncomplicated, powerful, and easy-to-use software.",
-      fullStory:
-      "Freshworks is a global SaaS company providing cloud-based software.",
+      vision: "To simplify business operations and improve both customer and employee experiences.",
+      mission: "To provide uncomplicated, powerful, and easy-to-use software.",
+      fullStory: "Freshworks is a global SaaS company providing cloud-based software.",
     ),
   ];
 
@@ -76,7 +72,6 @@ class _StoriesScreenState extends State<StoriesScreen> {
     });
   }
 
-  // Logout function
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
@@ -90,41 +85,124 @@ class _StoriesScreenState extends State<StoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: Column(
+        child: Stack(
           children: [
-            UserAccountsDrawerHeader(
-              accountName: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProfileScreen(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 70),
+              child: Column(
+                children: [
+                  UserAccountsDrawerHeader(
+                    accountName: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ProfileScreen()),
+                        );
+                      },
+                      child: Text(
+                        "Role: ${widget.userRole}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  );
-                },
-                child: Text("Role: ${widget.userRole}"),
+                    accountEmail: null,
+                    currentAccountPicture: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ProfileScreen()),
+                        );
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.person,
+                            size: 40, color: Color(0xFF1ABC9C)),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.teal[300]!, Color(0xFF1ABC9C)!],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFF1ABC9C),
+                            child: const Icon(Icons.home, color: Colors.white),
+                          ),
+                          title: const Text("Home"),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFF1ABC9C),
+                            child: const Icon(Icons.info, color: Colors.white),
+                          ),
+                          title: const Text("About"),
+                          onTap: () {},
+                        ),
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFF1ABC9C),
+                            child: const Icon(Icons.book, color: Colors.white),
+                          ),
+                          title: const Text("Stories"),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              accountEmail: null,
-              currentAccountPicture: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProfileScreen(),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: _logout,
+                child: Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: const LinearGradient(
+                      colors: [Colors.redAccent, Colors.red], // Red gradient
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  );
-                },
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 40, color: Color(0xFF1ABC9C)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              decoration: BoxDecoration(color: Color(0xFF1ABC9C)),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text("Logout"),
-              onTap: _logout,
             ),
           ],
         ),
@@ -136,7 +214,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
           child: Text(
             "Stories",
             style: TextStyle(
-              color: Color(0xFF1ABC9C),
+              color: Colors.teal,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -165,8 +243,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
                   onChanged: searchCompany,
                   decoration: InputDecoration(
                     hintText: "Explore startup stories",
-                    prefixIcon:
-                    Icon(Icons.search, color: Colors.grey[600]),
+                    prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                     border: InputBorder.none,
                   ),
                 ),
@@ -177,30 +254,13 @@ class _StoriesScreenState extends State<StoriesScreen> {
                 itemCount: filteredStories.length,
                 physics: const ClampingScrollPhysics(),
                 itemBuilder: (ctx, index) {
-                  return TweenAnimationBuilder<double>(
-                    duration: Duration(milliseconds: 400 + index * 100),
-                    curve: Curves.easeOut,
-                    tween: Tween(begin: 0.8, end: 1.0),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: Opacity(
-                          opacity: value.clamp(0.0, 1.0),
-                          child: child,
-                        ),
-                      );
-                    },
-                    child: StoryCard(story: filteredStories[index]),
-                  );
+                  return StoryCard(story: filteredStories[index]);
                 },
               ),
             ),
-
-            // ROLE BASED ACCESS
             if (widget.userRole.toLowerCase().trim() == 'story teller')
               Padding(
-                padding:
-                const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -214,7 +274,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     decoration: BoxDecoration(
-                      color: Color(0xFF1ABC9C).withOpacity(0.75),
+                      color: Colors.teal.withOpacity(0.75),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: const Center(
