@@ -51,10 +51,15 @@ Pitch is built with a **modular, scalable architecture** designed to handle high
 ### 📷 Prototype
 
 Welcome Page - https://drive.google.com/file/d/1ndTLuJqzfNKN3NMAo60QsJXIrkbJCEMa/view?usp=sharing
+
 Signin - https://drive.google.com/file/d/1F2BX7E7ijCg2_70wwsk3QVKcoYCgWvPf/view?usp=sharing
+
 Login - https://drive.google.com/file/d/1ESMt0cPVrD0OhpE6Tbl5gTnz_PAacYh3/view?usp=sharing
+
 Startups Page - https://drive.google.com/file/d/1PqhVl2Yn3V4nub0tmiIBDsdEVU_-Iaqf/view?usp=sharing
+
 Story Upload - https://drive.google.com/file/d/1-_gg-ds02OmaiOvPF-qSSVqKUe0kCsQQ/view?usp=sharing
+
 Profile Page - https://drive.google.com/file/d/1yCPjkwhjtPfVtHRxVa3w2NjoXX2j0aIy/view?usp=sharing
 
 ## 🛠️ Installation & Setup
