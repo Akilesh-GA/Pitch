@@ -12,6 +12,16 @@ Early-stage founders face a fragmented landscape when trying to build brand equi
 ## 💡 The Solution
 Pitch offers a narrative-first approach to fundraising and brand building. It serves as a digital stage where founders showcase their roadmap and investors discover the "why" behind the business.
 
+### 📷 Prototype
+
+<div align="center" style="display: flex; justify-content: center; align-items: flex-start; gap: 10px; flex-wrap: nowrap;">
+  <img src="img/welcome_page.png" alt="Welcome" style="width: 18%; height: auto;">
+  <img src="img/signup_page.png" alt="Signup" style="width: 18%; height: auto;">
+  <img src="img/login_page.png" alt="Login" style="width: 18%; height: auto;">
+  <img src="img/startups_page.png" alt="Startups" style="width: 18%; height: auto;">
+  <img src="img/upload_story.png" alt="Upload" style="width: 18%; height: auto;">
+</div>
+
 ## 🎯 Key Features
 
 ### 👤 Role-Based Ecosystem
@@ -47,21 +57,7 @@ Pitch is built with a **modular, scalable architecture** designed to handle high
 * 📈 **Founder Analytics:** Track engagement metrics and investor interest.
 * 🤖 **AI Recommendations:** Matching investors to startups based on sector preference.
 * 🛡️ **Investor Verification:** An onboarding tier for accredited investors.
-* 
-### 📷 Prototype
-
-Welcome Page - https://drive.google.com/file/d/1ndTLuJqzfNKN3NMAo60QsJXIrkbJCEMa/view?usp=sharing
-
-Signin - https://drive.google.com/file/d/1F2BX7E7ijCg2_70wwsk3QVKcoYCgWvPf/view?usp=sharing
-
-Login - https://drive.google.com/file/d/1ESMt0cPVrD0OhpE6Tbl5gTnz_PAacYh3/view?usp=sharing
-
-Startups Page - https://drive.google.com/file/d/1PqhVl2Yn3V4nub0tmiIBDsdEVU_-Iaqf/view?usp=sharing
-
-Story Upload - https://drive.google.com/file/d/1-_gg-ds02OmaiOvPF-qSSVqKUe0kCsQQ/view?usp=sharing
-
-Profile Page - https://drive.google.com/file/d/1yCPjkwhjtPfVtHRxVa3w2NjoXX2j0aIy/view?usp=sharing
-
+  
 ## 🛠️ Installation & Setup
 
 1. **Clone the repository**
